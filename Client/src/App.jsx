@@ -1,35 +1,130 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import About from './pages/About';
+import Services from './pages/Services';
+import Portfolio from './pages/Portfolio';
+import Courses from './pages/Courses';
+import Store from './pages/Store';
+import Team from './pages/Team';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
 
-function App() {
-  const [count, setCount] = useState(0)
+// ScrollToTop component to scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
+// Page transition wrapper
+const PageWrapper = ({ children }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const AppContent = () => {
+  const location = useLocation();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="relative min-h-screen bg-[#0F0F0F]">
+      <Navbar />
+      <ScrollToTop />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route 
+            path="/about" 
+            element={
+              <PageWrapper>
+                <About />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/services" 
+            element={
+              <PageWrapper>
+                <Services />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/portfolio" 
+            element={
+              <PageWrapper>
+                <Portfolio />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/courses" 
+            element={
+              <PageWrapper>
+                <Courses />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/store" 
+            element={
+              <PageWrapper>
+                <Store />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/team" 
+            element={
+              <PageWrapper>
+                <Team />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/contact" 
+            element={
+              <PageWrapper>
+                <Contact />
+              </PageWrapper>
+            } 
+          />
+          <Route 
+            path="/faq" 
+            element={
+              <PageWrapper>
+                <FAQ />
+              </PageWrapper>
+            } 
+          />
+        </Routes>
+      </AnimatePresence>
+      <Footer />
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
 }
 
-export default App
+export default App;
