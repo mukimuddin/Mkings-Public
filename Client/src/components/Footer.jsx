@@ -37,6 +37,11 @@ const Footer = () => {
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
+                <Link to="/" className="text-gray-400 hover:text-yellow-500 transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
                 <Link to="/about" className="text-gray-400 hover:text-yellow-500 transition-colors">
                   About Us
                 </Link>
@@ -49,6 +54,21 @@ const Footer = () => {
               <li>
                 <Link to="/portfolio" className="text-gray-400 hover:text-yellow-500 transition-colors">
                   Portfolio
+                </Link>
+              </li>
+              <li>
+                <Link to="/store" className="text-gray-400 hover:text-yellow-500 transition-colors">
+                  Store
+                </Link>
+              </li>
+              <li>
+                <Link to="/team" className="text-gray-400 hover:text-yellow-500 transition-colors">
+                  Team
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-gray-400 hover:text-yellow-500 transition-colors">
+                  FAQ
                 </Link>
               </li>
               <li>
@@ -100,15 +120,23 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
                 <FiMail />
-                <span>contact@mkingsgroup.com</span>
+                <span>info@mkingsgroup.com</span>
               </li>
             </ul>
+            <div className="mt-6">
+              <Link 
+                to="/contact" 
+                className="inline-block px-4 py-2 bg-gradient-to-r from-red-500 to-yellow-500 text-white rounded-lg hover:shadow-lg transition-all"
+              >
+                Get in Touch
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-white/10 text-center text-gray-400">
-          <p>&copy; {currentYear} M Kings Group & Company Ltd. All rights reserved.</p>
+          <p>&copy; {currentYear} M Kings Group. All rights reserved.</p>
         </div>
       </div>
     </footer>

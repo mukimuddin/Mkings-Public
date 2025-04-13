@@ -1,5 +1,6 @@
 import { motion, easeOut } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -89,12 +90,12 @@ const HeroSection = () => {
           className="flex flex-col md:flex-row gap-6 justify-center items-center"
           variants={itemVariants}
         >
-          <button className="px-8 py-4 bg-gradient-to-r from-[#FF4500] to-[#FFD700] text-black font-bold rounded-full transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-[#FF4500]/20">
+          <Link to="/services" className="px-8 py-4 bg-gradient-to-r from-[#FF4500] to-[#FFD700] text-black font-bold rounded-full transform hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-[#FF4500]/20">
             Get Started
-          </button>
-          <button className="px-8 py-4 border-2 border-[#FF4500] text-white font-bold rounded-full hover:bg-[#FF4500]/10 transition-colors duration-200">
+          </Link>
+          <Link to="/about" className="px-8 py-4 border-2 border-[#FF4500] text-white font-bold rounded-full hover:bg-[#FF4500]/10 transition-colors duration-200">
             Learn More
-          </button>
+          </Link>
         </motion.div>
       </motion.div>
 

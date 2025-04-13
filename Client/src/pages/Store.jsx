@@ -1,4 +1,4 @@
-import React, { useState, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useCallback, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import PageLayout from '../components/PageLayout';
 import StandardSection from '../components/StandardSection';
@@ -71,12 +71,30 @@ const products = [
 const Store = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Products');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredProducts = useMemo(() => {
+  const handleCategoryChange = useCallback((category) => {
+    setIsLoading(true);
+    setSelectedCategory(category);
+    // Simulate loading state for smoother UX
+    setTimeout(() => setIsLoading(false), 300);
+  }, []);
+
+  const handleSearchChange = useCallback((e) => {
+    setIsLoading(true);
+    setSearchQuery(e.target.value);
+    // Simulate loading state for smoother UX
+    setTimeout(() => setIsLoading(false), 300);
+  }, []);
+
+  const filteredProducts = React.useMemo(() => {
+    if (!searchQuery && selectedCategory === 'All Products') return products;
+
     return products.filter(product => {
       const matchesCategory = selectedCategory === 'All Products' || product.category === selectedCategory;
-      const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = !searchQuery || 
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery]);
@@ -98,35 +116,38 @@ const Store = () => {
             type="text"
             placeholder="Search products..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full max-w-md mx-auto block px-4 py-2 rounded-lg bg-[#1A1A1A] border border-gray-700 focus:border-primary focus:outline-none"
+            onChange={handleSearchChange}
+            className="w-full max-w-md mx-auto block px-4 py-2 rounded-lg bg-[#1A1A1A] border border-gray-700 focus:border-primary focus:outline-none text-white"
           />
         </div>
 
-        <Suspense fallback={
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        }>
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-          />
-        </Suspense>
+        <CategoryFilter
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleCategoryChange}
+        />
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          <Suspense fallback={
-            <div className="col-span-full flex justify-center">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {isLoading ? (
+            <div className="col-span-full flex justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
-          }>
-            {filteredProducts.map((product) => (
+          ) : filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
-            ))}
-          </Suspense>
-        </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 text-gray-400">
+              No products found matching your criteria
+            </div>
+          )}
+        </motion.div>
       </StandardSection>
 
       {/* CTA Section */}
@@ -139,12 +160,14 @@ const Store = () => {
         gradientColors={['#FF4500', '#FFD700']}
       >
         <div className="text-center">
-          <a
+          <motion.a
             href="/signup"
             className="inline-block px-8 py-3 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Sign Up Now
-          </a>
+          </motion.a>
         </div>
       </StandardSection>
     </PageLayout>
