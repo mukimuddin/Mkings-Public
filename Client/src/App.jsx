@@ -1,130 +1,47 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Portfolio from './pages/Portfolio';
-import Courses from './pages/Courses';
-import Store from './pages/Store';
-import Team from './pages/Team';
-import Contact from './pages/Contact';
-import FAQ from './pages/FAQ';
+import { theme } from './styles/theme';
 
-// ScrollToTop component to scroll to top on route change
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
+// Lazy load pages
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Services = lazy(() => import('./pages/Services'));
+const Portfolio = lazy(() => import('./pages/Portfolio'));
+const Store = lazy(() => import('./pages/Store'));
+const Team = lazy(() => import('./pages/Team'));
+const Contact = lazy(() => import('./pages/Contact'));
+const FAQ = lazy(() => import('./pages/FAQ'));
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+// Loading component
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#0F0F0F]">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+  </div>
+);
 
-  return null;
-};
-
-// Page transition wrapper
-const PageWrapper = ({ children }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-const AppContent = () => {
-  const location = useLocation();
-
-  return (
-    <div className="relative min-h-screen bg-[#0F0F0F]">
-      <Navbar />
-      <ScrollToTop />
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route 
-            path="/about" 
-            element={
-              <PageWrapper>
-                <About />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/services" 
-            element={
-              <PageWrapper>
-                <Services />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/portfolio" 
-            element={
-              <PageWrapper>
-                <Portfolio />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/courses" 
-            element={
-              <PageWrapper>
-                <Courses />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/store" 
-            element={
-              <PageWrapper>
-                <Store />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/team" 
-            element={
-              <PageWrapper>
-                <Team />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/contact" 
-            element={
-              <PageWrapper>
-                <Contact />
-              </PageWrapper>
-            } 
-          />
-          <Route 
-            path="/faq" 
-            element={
-              <PageWrapper>
-                <FAQ />
-              </PageWrapper>
-            } 
-          />
-        </Routes>
-      </AnimatePresence>
-      <Footer />
-    </div>
-  );
-};
-
-function App() {
+const App = () => {
   return (
     <Router>
-      <AppContent />
+      <div style={{ background: theme.colors.background }}>
+        <Navbar />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </Suspense>
+        <Footer />
+      </div>
     </Router>
   );
-}
+};
 
 export default App;
